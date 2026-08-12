@@ -14,6 +14,9 @@ const Testimonials = lazy(() => import('./components/Testimonials'))
 const Enrollment = lazy(() => import('./components/Enrollment'))
 const Footer = lazy(() => import('./components/Footer'))
 
+// TEMP dev preview route — hoisted so it isn't re-created on every render.
+const Stage = lazy(() => import('./Stage'))
+
 function LoadingSplash() {
   return (
     <div
@@ -31,6 +34,15 @@ function LoadingSplash() {
 export default function App() {
   const { t } = useTranslation()
   const q = useDeviceQuality()
+
+  // TEMP: dev preview — ?stage renders the 3D character demo instead of the site.
+  if (typeof window !== 'undefined' && new URL(window.location.href).searchParams.has('stage')) {
+    return (
+      <Suspense fallback={<LoadingSplash />}>
+        <Stage />
+      </Suspense>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-brand-bg text-slate-100">
