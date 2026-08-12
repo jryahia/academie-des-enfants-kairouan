@@ -11,35 +11,6 @@ export interface DeviceQuality {
   can3D: boolean
 }
 
-function hasGPUPower(): boolean {
-  try {
-    const canvas = document.createElement('canvas')
-    const gl = canvas.getContext('webgl') as WebGLRenderingContext | null
-    if (!gl) return false
-    const ext = gl.getExtension('WEBGL_debug_renderer_info') as
-      | { UNMASKED_RENDERER_WEBGL?: number }
-      | null
-    const renderer = ext
-      ? String(gl.getParameter(ext.UNMASKED_RENDERER_WEBGL as number))
-      : ''
-    const low = /(SwiftShader|llvmpipe|Software|Mali-?4|Adreno-?3|Adreno-?2)/i.test(renderer)
-    return !low
-  } catch {
-    return false
-  }
-}
-
-function isLowMemory(): boolean {
-  try {
-    const anyNav = navigator as unknown as Record<string, unknown>
-    const dm = anyNav.deviceMemory as number | undefined
-    if (typeof dm === 'number') return dm < 4
-  } catch {
-    /* ignore */
-  }
-  return false
-}
-
 export function useDeviceQuality(): DeviceQuality {
   return useMemo<DeviceQuality>(() => {
     const reducedMotion =
@@ -48,13 +19,20 @@ export function useDeviceQuality(): DeviceQuality {
     const isMobile =
       typeof window.matchMedia === 'function' &&
       window.matchMedia('(max-width: 768px)').matches
-    const lowPower = isLowMemory() || !hasGPUPower()
-    // Reduced motion ALWAYS disables heavy 3D, regardless of GPU.
+    // Do NOT tie 3D off to GPU/memory heuristics — they're unreliable across
+    // devices and wrongly disable the animation on capable machines. Heavy 3D
+    // is gated ONLY by the user's explicit reduced-motion preference. The dpr
+    // cap plus low-poly geometry handles mobile perf.
+    const lowPower =
+      typeof navigator !== 'undefined' && 'deviceMemory' in navigator
+        ? (navigator as unknown as { deviceMemory?: number }).deviceMemory !== undefined &&
+          (navigator as unknown as { deviceMemory?: number }).deviceMemory! < 2
+        : false
     return {
       lowPower,
       reducedMotion,
       isMobile,
-      can3D: !reducedMotion && !lowPower,
+      can3D: !reducedMotion,
     }
   }, [])
 }

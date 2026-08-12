@@ -2,6 +2,7 @@ import { Suspense, lazy } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDeviceQuality } from './hooks/useDeviceQuality'
 import LanguageSwitcher from './components/LanguageSwitcher'
+import SceneBoundary from './components/SceneBoundary'
 
 // Heavy 3D scenes are lazy-loaded so core content+CTA render immediately even
 // before assets stream in (progressive reveal requirement).
@@ -71,7 +72,29 @@ export default function App() {
 
       <main id="top" className="relative z-10">
         <Suspense fallback={<LoadingSplash />}>
-          <RunnerHero deviceQuality={q} />
+          <SceneBoundary
+            fallback={
+              <section
+                className="relative w-full h-[100dvh] flex flex-col items-center justify-center text-center px-4 overflow-hidden"
+                style={{ background: 'linear-gradient(#8FE3FA 0%, #CDEFFD 45%, #FFF6E9 100%)' }}
+              >
+                <div className="text-7xl animate-bounce" aria-hidden>🦉</div>
+                <h1 className="mt-6 font-display text-4xl sm:text-6xl font-extrabold text-candy-ink drop-shadow-[0_2px_0_rgba(255,255,255,0.7)]">
+                  {t('hero.title1')} <span className="text-candy-orange">{t('hero.title2')}</span>
+                </h1>
+                <div className="mt-8 flex gap-3">
+                  <a href="#contact" className="rounded-full bg-candy-coral text-white px-7 py-3 font-bold text-lg shadow-lg shadow-candy-coral/40 hover:scale-105 active:scale-95 transition-transform">
+                    {t('cta.enroll')}
+                  </a>
+                  <a href="#about" className="rounded-full bg-white text-candy-navy px-7 py-3 font-bold text-lg shadow-lg shadow-black/10 hover:scale-105 active:scale-95 transition-transform">
+                    {t('cta.learnMore')}
+                  </a>
+                </div>
+              </section>
+            }
+          >
+            <RunnerHero deviceQuality={q} />
+          </SceneBoundary>
           <About />
           <Programs />
           <World />

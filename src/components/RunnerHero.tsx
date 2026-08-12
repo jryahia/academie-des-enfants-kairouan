@@ -244,7 +244,6 @@ export default function RunnerHero({ deviceQuality }: { deviceQuality: DeviceQua
   const isRtl = i18n.language === 'ar'
   const quality = deviceQuality
   const reduced = quality.reducedMotion || !quality.can3D
-  const using3D = !reduced
 
   // pick greeting phrase (AR or FR)
   const currentGreeting =
@@ -252,9 +251,8 @@ export default function RunnerHero({ deviceQuality }: { deviceQuality: DeviceQua
 
   return (
     <section id="top" className="relative w-full h-[100dvh] overflow-hidden" style={{ background: 'linear-gradient(#8FE3FA 0%, #CDEFFD 45%, #FFF6E9 100%)' }}>
-      {/* 3D canvas */}
+      {/* 3D canvas — mounted once for the scene's lifetime (no key remount) */}
       <Canvas
-        key={using3D ? '3d' : '2d'}
         camera={{ position: [0, 2.2, 9], fov: 45 }}
         dpr={quality.isMobile ? [1, 1.5] : [1, 2]}
         gl={{ antialias: true, powerPreference: 'high-performance' }}
