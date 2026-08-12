@@ -8,7 +8,7 @@ import { Owlie, Blobby, Pip } from './three'
  */
 export default function Stage() {
   return (
-    <div className="w-full h-screen bg-brand-bg">
+    <div className="w-full h-screen bg-candy-cream">
       <Canvas camera={{ position: [0, 1.2, 5], fov: 45 }}>
         <ambientLight intensity={0.6} />
         <directionalLight position={[3, 5, 4]} intensity={1.2} />

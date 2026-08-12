@@ -7,7 +7,7 @@ export default function About() {
       <h2 className="font-display text-3xl sm:text-4xl font-bold text-center">
         <span className="text-gradient">{t('about.title')}</span>
       </h2>
-      <p className="mt-6 text-center text-slate-300 text-lg leading-relaxed">{t('about.body')}</p>
+      <p className="mt-6 text-center text-candy-ink/75 text-lg leading-relaxed">{t('about.body')}</p>
     </section>
   )
 }

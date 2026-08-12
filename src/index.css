@@ -2,10 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  color-scheme: dark;
-}
-
 /* ===== Reduced motion: calm but complete, never broken ===== */
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -18,14 +14,19 @@
   }
 }
 
+/* ===== Candy light theme (Spacetoon-inspired) ===== */
+:root {
+  color-scheme: light;
+}
+
 html {
   scroll-behavior: smooth;
 }
 
 body {
   margin: 0;
-  background: #0a0f1f;
-  color: #f4f6ff;
+  background: #fff6e9; /* candy cream */
+  color: #2a2e45;      /* candy ink */
   font-family: 'Nunito', 'Cairo', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
@@ -40,17 +41,17 @@ html[dir='rtl'] body {
   min-height: 100vh;
 }
 
-/* Glassmorphism helper */
+/* Glassmorphism helper — light candy card */
 .glass {
-  background: rgba(18, 26, 46, 0.55);
+  background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(42, 46, 69, 0.08);
 }
 
-/* Gradient text */
+/* Gradient text — candy */
 .text-gradient {
-  background: linear-gradient(135deg, #6c5ce7, #5b8def, #3ddc97);
+  background: linear-gradient(135deg, #3a4a8f, #4a8fe7, #f4793a);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;

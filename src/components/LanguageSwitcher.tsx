@@ -29,14 +29,14 @@ export default function LanguageSwitcher() {
       <button
         onClick={toggle}
         disabled={busy}
-        className="rounded-full border border-white/15 px-3 py-1.5 text-sm font-bold hover:border-brand-indigo hover:text-brand-indigo transition-colors"
+        className="rounded-full border border-candy-ink/20 px-3 py-1.5 text-sm font-bold hover:border-candy-orange hover:text-candy-orange transition-colors"
         aria-label={`Switch language to ${NAME[current === 'ar' ? 'fr' : 'ar']}`}
       >
         {LABEL[current]}
       </button>
       {busy && (
         <motion.span
-          className="absolute inset-0 rounded-full bg-brand-indigo/20"
+          className="absolute inset-0 rounded-full bg-candy-orange/20"
           initial={{ opacity: 1 }}
           animate={{ opacity: 0 }}
           transition={{ duration: 0.9, ease: 'easeInOut' }}

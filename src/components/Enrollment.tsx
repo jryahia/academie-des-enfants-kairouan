@@ -34,11 +34,11 @@ export default function Enrollment() {
   }
 
   const input =
-    'w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-brand-indigo transition-colors'
+    'w-full rounded-xl bg-white/80 border border-candy-ink/10 px-4 py-3 text-candy-ink placeholder:text-candy-ink/40 focus:outline-none focus:border-candy-orange transition-colors'
 
   const field = (name: keyof typeof form, label: string, placeholder: string, error?: string) => (
     <label className="block">
-      <span className="block text-sm font-semibold text-slate-300 mb-1">{label}</span>
+      <span className="block text-sm font-semibold text-candy-ink mb-1">{label}</span>
       <input
         className={input + (error ? ' border-red-400' : '')}
         value={form[name]}
@@ -56,7 +56,7 @@ export default function Enrollment() {
         <h2 className="font-display text-3xl sm:text-4xl font-bold text-center text-gradient">
           {t('contact.title')}
         </h2>
-        <p className="mt-3 text-center text-slate-400">{t('contact.subtitle')}</p>
+        <p className="mt-3 text-center text-candy-ink/60">{t('contact.subtitle')}</p>
 
         <AnimatePresence mode="wait">
           {sent ? (
@@ -86,7 +86,7 @@ export default function Enrollment() {
               {field('age', t('contact.form.age'), '4 – 5 ans')}
               {field('phone', t('contact.form.phone'), '+216 ...', errors.phone)}
               <label className="block">
-                <span className="block text-sm font-semibold text-slate-300 mb-1">
+                <span className="block text-sm font-semibold text-candy-ink mb-1">
                   {t('contact.form.message')}
                 </span>
                 <textarea
@@ -98,7 +98,7 @@ export default function Enrollment() {
               </label>
               <button
                 type="submit"
-                className="w-full rounded-full bg-brand-indigo py-3.5 font-bold text-lg hover:scale-[1.02] active:scale-95 transition-transform shadow-lg shadow-brand-indigo/30"
+                className="w-full rounded-full bg-candy-coral text-white py-3.5 font-bold text-lg hover:scale-[1.02] active:scale-95 transition-transform shadow-lg shadow-candy-coral/40"
               >
                 {t('contact.form.submit')}
               </button>

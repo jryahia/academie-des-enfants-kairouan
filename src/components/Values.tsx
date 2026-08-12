@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
-import { LOCALES } from '../i18n'
 
 const VALUE_KEYS = ['joy', 'safety', 'creativity', 'growth', 'community', 'languages'] as const
 const EMOJI: Record<(typeof VALUE_KEYS)[number], string> = {
@@ -30,12 +29,10 @@ export default function Values() {
             className="glass rounded-2xl p-6 flex flex-col items-center gap-2"
           >
             <span className="text-4xl" aria-hidden>{EMOJI[v]}</span>
-            <span className="font-display font-bold">{t(`values.items.${v}`)}</span>
+            <span className="font-display font-bold text-candy-ink">{t(`values.items.${v}`)}</span>
           </motion.div>
         ))}
       </div>
     </section>
   )
 }
-
-export { LOCALES }
