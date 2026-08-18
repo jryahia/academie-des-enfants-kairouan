@@ -9,7 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion'
  * POST to a backend or go out via WhatsApp only.
  */
 export default function Enrollment() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const [form, setForm] = useState({ name: '', childName: '', age: '', phone: '', message: '' })
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [sent, setSent] = useState(false)
@@ -26,15 +26,35 @@ export default function Enrollment() {
     return Object.keys(e).length === 0
   }
 
-  const submit = (ev: React.FormEvent) => {
+  const submit = async (ev: React.FormEvent) => {
     ev.preventDefault()
     if (!validate()) return
-    // Celebration micro-animation fires here (Claude brief). For now confirm.
+    // Fan out to the enrollment API (Sheets/Gmail/Notion/webhook via the
+    // backend). Never blocks the UX: success shows immediately, and if the
+    // API is unreachable the lead is queued locally for later retry.
     setSent(true)
+    try {
+      const res = await fetch('/api/enrollments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...form, lang: i18n.language }),
+        signal: AbortSignal.timeout(6000),
+      })
+      if (!res.ok) throw new Error(String(res.status))
+    } catch (err) {
+      console.warn('enrollment API unreachable — lead queued locally', err)
+      try {
+        const q = JSON.parse(localStorage.getItem('academie-pending') || '[]')
+        q.push({ ...form, lang: i18n.language, ts: Date.now() })
+        localStorage.setItem('academie-pending', JSON.stringify(q))
+      } catch {
+        /* storage full/unavailable — lead stays in the form state only */
+      }
+    }
   }
 
   const input =
-    'w-full rounded-xl bg-white/80 border border-candy-ink/10 px-4 py-3 text-candy-ink placeholder:text-candy-ink/40 focus:outline-none focus:border-candy-orange transition-colors'
+    'w-full rounded-xl bg-candy-cloud/80 border border-candy-ink/12 px-4 py-3 text-candy-ink placeholder:text-candy-ink/35 focus:outline-none focus:border-candy-orange transition-colors'
 
   const field = (name: keyof typeof form, label: string, placeholder: string, error?: string) => (
     <label className="block">
@@ -98,7 +118,7 @@ export default function Enrollment() {
               </label>
               <button
                 type="submit"
-                className="w-full rounded-full bg-candy-coral text-white py-3.5 font-bold text-lg hover:scale-[1.02] active:scale-95 transition-transform shadow-lg shadow-candy-coral/40"
+                className="w-full rounded-full bg-candy-coral text-[#0a0a0c] py-3.5 font-bold text-lg hover:scale-[1.02] active:scale-95 transition-transform shadow-lg shadow-candy-coral/40"
               >
                 {t('contact.form.submit')}
               </button>

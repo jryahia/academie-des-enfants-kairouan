@@ -4,6 +4,9 @@ export { default as Pip } from './Pip'
 export { useRunCycle } from './useRunCycle'
 export { useSquashStretch } from './useSquashStretch'
 export { makeToonMaterial } from './ToonMaterial'
+export { PhotoFrame } from './PhotoFrame'
+export { PhotoCarousel } from './PhotoCarousel'
+export { PHOTOS_3D } from './PhotoFrame'
 import './ToonMaterial' // ensure <softToonMaterial> JSX element is registered
 
 export type { OwlieProps } from './Owlie'

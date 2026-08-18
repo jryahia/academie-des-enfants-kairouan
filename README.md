@@ -1,8 +1,9 @@
-# Académie des Enfants Kairouan — 100% Animated 3D Website
+# Académie des Enfants Kairouan — 3D + Real Photos Website
 
 Premium, animation-driven marketing site for a children's academy in Kairouan, Tunisia.
-**No real photos/video anywhere** — every visual is original 3D (r3f) or 2D
-illustration/Lottie/CSS animation.
+3D (r3f) + 2D illustration ORIGINAL visuals AND now the real academy photos
+(as of the photo-integration round — the old "no real photos" rule is superseded
+by Yahya's explicit instruction to use the added photos).
 
 ## Stack (locked)
 - React 18 + Vite + TypeScript (not Next.js — static SPA is fine)
@@ -49,14 +50,67 @@ people). Placeholder copy is explicitly marked `[…]` / "pending" — never inv
 specifics. Program names, staff, pricing come from the client.
 
 ## Build state
+- **Enrollment API (this round):** `backend/main.py` (FastAPI + uvicorn on
+  :8425) fans each form submission out to every configured channel and always
+  keeps a durable JSONL log (`backend/enrollments.log`). A failing/missing
+  channel never fails the request. Channels (env vars in `backend/.env`,
+  template in `backend/.env.example`):
+  - **Google Sheets + Gmail** — one Apps Script web app (`backend/appsscript.gs`)
+    appends the row AND emails the owner (NOTIFY_EMAIL script property). Zero
+    API keys; deploy is a paste + copy-URL.
+  - **Notion** — creates a page in `NOTION_DATABASE_ID` via the Notion API
+    (integration token `NOTION_API_KEY`).
+  - **Generic webhook** (`WEBHOOK_URL`) — Slack/Discord/Make/Zapier/Telegram.
+  - Frontend (`Enrollment.tsx`) POSTs `/api/enrollments` (Vite dev proxy →
+    :8425). Success shows instantly; if the API is unreachable the lead is
+    queued in localStorage (`academie-pending`) for retry.
+  - Notion MCP installed in the Hermes profile (catalog: notion) for
+    creating/managing the inquiries database in-session.
+- **Dark theme (Batman Studio, this round):** near-black `#0a0a0c` + gold
+  `#e5b63e`/`#f0c75e`, Playfair Display display face + Inter/Cairo body,
+  cinematic vignette over the photos, gold CTAs/nav/route, dark glass cards
+  for the enrollment form. Per-scene accents are gold-family
+  (`ScrollWorldFlight.tsx` ACCENTS).
 - Foundation committed (main): chunked Vite build, i18n/RTL dir switch, section
-  shells with translated placeholder content, useDeviceQuality hook
-  (reduced-motion + low-power fallback), lazy-loaded 3D sections.
-- **Build policy (locked): Claude Code is FORBIDDEN. OpenCode is on hold
-  (0 credentials, no DeepSeek key handy). All 3D coding is done directly
-  (r3f/three) by Codex.** Build only with a tool Yahya explicitly approves at
-  build time.
-- Next: build 3D character system (Owlie, Blobby, Pip), then Hero scene,
-  World diorama, programs icons, values, testimonial avatars, enrollment
-  celebration.
-- Verification: hands-on render check in AR+FR, RTL+LTR, reduced-motion, mobile perf.
+  shells with translated placeholder content, lazy-loaded 3D sections.
+- **3D built (all original r3f, no photos/video):**
+  - Mascot cast (Owlie/Blobby/Pip) + 9-crew parametric builder (`src/crew/`).
+  - Hero (Section 1): infinite-runner "Owlie's Playground Run" with the full
+    run cycle, 9 greeting stations + RTL Arabic speech bubbles
+    (`src/components/RunnerHero.tsx`).
+  - World diorama (Section 4): GSAP ScrollTrigger-pinned scroll-driven 3D scene —
+    camera dolly, Owlie runs across, crew walk through the park, Blobby/Pip
+    background beats, RTL mirroring (`src/components/WorldDiorama.tsx` +
+    `src/three/worldState.ts`). Wrapped in an ErrorBoundary so a WebGL failure
+    shows the headline + copy, never a blank section.
+  - `typecheck` fixed: `tsc --noEmit` (the old `tsc -b --noEmit` threw TS6310).
+- **Photo integration (photo round):** real academy photos added by Yahya, edge
+  caption/watermark bands auto-trimmed → WebP in `public/images/` + 640px
+  versions in `public/images/_3d/` (GPU-cheap for three.js).
+  - 2D: new `Gallery` section (all photos, candy polaroid masonry + lightbox,
+    AR/FR labels) + About feature photo.
+  - 3D: `src/three/PhotoFrame.tsx` + `src/three/PhotoCarousel.tsx` — the photos
+    as a slowly rotating ring of floating memory-frames behind the WorldDiorama,
+    RTL-aware via `worldScroll.facing`.
+- **Scroll-world flight (this round):** THE ENTIRE SITE is now the scroll-world
+  flight (github.com/oso95/scroll-world, MIT — vendored at
+  `src/vendor/scrub-engine.js`): a scroll-scrubbed camera flight through 7 REAL
+  academy photos (one per scene) as the full-viewport landing, with scene copy
+  overlays, route dots, topbar nav, topbar CTA + finale CTA → the enrollment
+  form (`#contact`). Only Enrollment + Footer follow the flight; About/Programs/
+  Gallery/Values/Testimonials components remain in the repo (unreferenced, not
+  deleted) for a future multi-section layout.
+  - `src/components/ScrollWorldFlight.tsx` mounts the engine (vanilla, drops
+    into React via ref), gates its fixed layers to the section (Intersection-
+    Observer → `body.sw-flight-active` hides the site header), re-syncs copy/
+    nav on language change + re-measures the flight offset (engine `relayout()`),
+    and portals the React LanguageSwitcher into the engine topbar.
+  - Dive clips: ffmpeg Ken-Burns zoom (1.0→1.22, 6.5 s, 720p H.264 crf24 g8
+    faststart, no audio) from each photo → `public/world/vid/dive_N.mp4`
+    (7 clips ≈ 17 MB). Reduced-motion: engine skips clips, cross-dissolves stills.
+  - Scene copy: `world.scenes` in `src/i18n/locales/{ar,fr}.ts` (7 scenes,
+    factual activity labels — no invented claims per the content rule).
+- Build policy (locked): Claude Code FORBIDDEN. All 3D coding direct (r3f/three).
+- Verification: hands-on render check in AR+FR, RTL+LTR, reduced-motion, mobile
+  perf (the headless browser can't paint WebGL — confirm the animation visually
+  in a real browser).

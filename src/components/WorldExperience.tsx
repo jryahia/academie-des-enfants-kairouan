@@ -1,27 +1,23 @@
 import { useTranslation } from 'react-i18next'
+import ScrollWorldFlight from './ScrollWorldFlight'
+import type { DeviceQuality } from '../hooks/useDeviceQuality'
 
-// Signature scroll-driven 3D diorama (GSAP ScrollTrigger + camera/character
-// movement) is a later build. This is the scaffold shell (candy themed).
-export default function WorldExperience() {
+/* =========================================================================
+  WorldExperience — Section 4: the scroll-world photo flight (signature
+  movement #3). The flight replaces the old GSAP-pinned 3D diorama canvas
+  with the scroll-world scrub engine: real academy photos, scroll-scrubbed
+  camera dives (ffmpeg Ken-Burns clips) with no cuts, scene copy overlays,
+  route dots + section nav. The engine owns its own scroll space (track
+  height) and gates its fixed layers to this section, so the page above and
+  below flows normally. Reduced-motion: the engine cross-dissolves the stills
+  without loading any clip.
+  ========================================================================= */
+
+export default function WorldExperience({ deviceQuality: _deviceQuality }: { deviceQuality: DeviceQuality }) {
   const { t } = useTranslation()
   return (
-    <section id="world" className="relative py-24 px-4 sm:px-6">
-      <div className="max-w-4xl mx-auto text-center">
-        <h2 className="font-display text-3xl sm:text-4xl font-bold text-gradient">
-          {t('world.title')}
-        </h2>
-        <p className="mt-3 text-candy-ink/60">{t('world.subtitle')}</p>
-      </div>
-      {/* GSAP ScrollTrigger pins/stages the 3D world here */}
-      <div
-        className="mt-10 aspect-[16/9] max-w-5xl mx-auto glass rounded-3xl overflow-hidden"
-        data-scroll-world
-        aria-label="3D diorama"
-      >
-        <div className="h-full w-full flex items-center justify-center text-6xl" aria-hidden>
-          🌍
-        </div>
-      </div>
+    <section id="world" className="relative w-full" aria-label={t('world.title')}>
+      <ScrollWorldFlight />
     </section>
   )
 }

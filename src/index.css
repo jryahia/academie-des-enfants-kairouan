@@ -14,9 +14,9 @@
   }
 }
 
-/* ===== Candy light theme (Spacetoon-inspired) ===== */
+/* ===== Batman Studio dark theme (near-black + gold, cinematic) ===== */
 :root {
-  color-scheme: light;
+  color-scheme: dark;
 }
 
 html {
@@ -25,34 +25,212 @@ html {
 
 body {
   margin: 0;
-  background: #fff6e9; /* candy cream */
-  color: #2a2e45;      /* candy ink */
-  font-family: 'Nunito', 'Cairo', system-ui, sans-serif;
+  background: #0a0a0c; /* Gotham black */
+  color: #ece8de;      /* warm off-white ink */
+  font-family: 'Inter', 'Cairo', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
 
 /* RTL-aware defaults */
 html[dir='rtl'] body {
-  font-family: 'Cairo', 'Nunito', system-ui, sans-serif;
+  font-family: 'Cairo', 'Inter', system-ui, sans-serif;
 }
 
 #root {
   min-height: 100vh;
 }
 
-/* Glassmorphism helper — light candy card */
+/* Glassmorphism helper — dark cinematic glass card */
 .glass {
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(20, 20, 25, 0.62);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(42, 46, 69, 0.08);
+  border: 1px solid rgba(236, 232, 222, 0.08);
+  box-shadow: 0 24px 60px -24px rgba(0, 0, 0, 0.7);
 }
 
-/* Gradient text — candy */
+/* Gradient text — gold (Batman accent) */
 .text-gradient {
-  background: linear-gradient(135deg, #3a4a8f, #4a8fe7, #f4793a);
+  background: linear-gradient(135deg, #f0c75e 0%, #e5b63e 45%, #b8902e 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+/* =========================================================================
+   Scroll-world flight (vendored scrub engine, .sw-* classes)
+   Themed to the Batman Studio look: near-black sky, gold accent, cinematic
+   display type, vignette grade over the photos. Fixed layers are gated to the
+   section (the site IS the flight, so it starts active at load).
+   ========================================================================= */
+.sw-flight {
+  /* Unlayered vars beat the engine's @layer sw defaults */
+  --sw-bg: #0b0b10; /* near-black — dramatic against the bright photos */
+  --sw-ink: #f2efe6;
+  --sw-ink-soft: #9a96a3;
+  --sw-accent: #e5b63e; /* Batman gold */
+  --sw-font-display: 'Playfair Display', 'Cairo', serif;
+  --sw-font-body: 'Inter', 'Cairo', system-ui, sans-serif;
+}
+
+/* Fixed layers hidden until the section is on screen */
+.sw-flight .sw-sky,
+.sw-flight .sw-scrollbar,
+.sw-flight .sw-topbar,
+.sw-flight .sw-stage,
+.sw-flight .sw-copylayer,
+.sw-flight .sw-route,
+.sw-flight .sw-hint {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 0.5s ease,
+    visibility 0.5s;
+}
+.sw-flight.sw-active .sw-sky,
+.sw-flight.sw-active .sw-scrollbar,
+.sw-flight.sw-active .sw-topbar,
+.sw-flight.sw-active .sw-stage,
+.sw-flight.sw-active .sw-copylayer,
+.sw-flight.sw-active .sw-route,
+.sw-flight.sw-active .sw-hint {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+/* While the flight owns the viewport, hide the site header (z-40) so the
+   engine's own topbar (z-50) reads as the page chrome. */
+body.sw-flight-active .site-header {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+/* --- cinematic grade: subtle vignette over the photos --- */
+.sw-flight .sw-stage::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    radial-gradient(130% 100% at 50% 38%, transparent 52%, rgba(5, 5, 8, 0.42) 88%, rgba(4, 4, 6, 0.62) 100%),
+    linear-gradient(180deg, rgba(10, 10, 12, 0.18) 0%, transparent 16%, transparent 78%, rgba(10, 10, 12, 0.34) 100%);
+}
+
+/* --- engine dark overrides --- */
+
+/* Gold primary buttons (engine default = --sw-ink bg = near-white) */
+.sw-flight .sw-btn--primary,
+.sw-flight .sw-topcta {
+  background: var(--sw-accent);
+  color: #0a0a0c;
+  box-shadow: 0 8px 28px -8px color-mix(in srgb, var(--sw-accent) 55%, transparent);
+}
+.sw-flight .sw-btn--primary:hover,
+.sw-flight .sw-topcta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px -8px color-mix(in srgb, var(--sw-accent) 70%, transparent);
+}
+.sw-flight .sw-btn--ghost {
+  color: var(--sw-ink);
+  border-color: color-mix(in srgb, var(--sw-accent) 45%, transparent);
+}
+
+/* Topbar nav pill — dark glass */
+.sw-flight .sw-nav {
+  background: rgba(20, 20, 26, 0.72);
+  backdrop-filter: blur(14px);
+  border-color: color-mix(in srgb, var(--sw-accent) 22%, transparent);
+  box-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.8);
+}
+.sw-flight .sw-nav__item {
+  color: var(--sw-ink-soft);
+}
+.sw-flight .sw-nav__item:hover {
+  color: var(--sw-ink);
+}
+.sw-flight .sw-nav__item.is-active {
+  color: #0a0a0c;
+  background: var(--sw-accent);
+}
+
+/* Brand mark glows gold */
+.sw-flight .sw-brand__mark {
+  box-shadow:
+    0 6px 14px color-mix(in srgb, var(--sw-accent) 45%, transparent),
+    0 0 22px color-mix(in srgb, var(--sw-accent) 28%, transparent);
+}
+
+/* Copy panel — chic cinematic type */
+.sw-flight .sw-copy__num {
+  color: color-mix(in srgb, var(--sw-accent) 78%, var(--sw-ink-soft));
+  letter-spacing: 0.18em;
+}
+.sw-flight .sw-copy__eyebrow {
+  letter-spacing: 0.22em;
+  color: var(--sw-accent);
+}
+.sw-flight .sw-copy__title {
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  text-shadow: 0 2px 30px rgba(0, 0, 0, 0.55);
+}
+.sw-flight .sw-copy__body {
+  color: color-mix(in srgb, var(--sw-ink) 82%, var(--sw-ink-soft));
+  text-shadow: 0 1px 14px rgba(0, 0, 0, 0.5);
+}
+.sw-flight .sw-copy__tags li {
+  color: var(--sw-accent);
+  background: color-mix(in srgb, var(--sw-accent) 12%, #141419);
+  border-color: color-mix(in srgb, var(--sw-accent) 30%, transparent);
+}
+
+/* Route rail — dark with gold dots */
+.sw-flight .sw-route__label {
+  color: var(--sw-ink);
+  background: rgba(16, 16, 21, 0.92);
+  backdrop-filter: blur(8px);
+  border-color: color-mix(in srgb, var(--sw-accent) 18%, transparent);
+}
+
+/* Scrollbar + hint stay accent-tinted (engine handles via vars) */
+
+/* Language switcher appended into the engine topbar */
+.sw-flight .sw-lang {
+  display: flex;
+  align-items: center;
+  margin-left: 12px;
+}
+.sw-flight .sw-lang button {
+  color: var(--sw-ink);
+  border-color: color-mix(in srgb, var(--sw-ink) 28%, transparent);
+  background: rgba(20, 20, 26, 0.72);
+  backdrop-filter: blur(14px);
+}
+.sw-flight .sw-lang button:hover {
+  border-color: var(--sw-accent);
+  color: var(--sw-accent);
+}
+
+/* RTL mirroring — copy panel, wash gradient and route flip sides */
+html[dir='rtl'] .sw-flight .sw-copy {
+  left: auto;
+  right: clamp(18px, 5vw, 64px);
+}
+html[dir='rtl'] .sw-flight .sw-copylayer::before {
+  left: auto;
+  right: 0;
+  transform: scaleX(-1);
+}
+html[dir='rtl'] .sw-flight .sw-route {
+  right: auto;
+  left: clamp(14px, 2.4vw, 30px);
+}
+html[dir='rtl'] .sw-flight .sw-route__label {
+  right: 24px;
+  left: auto;
 }

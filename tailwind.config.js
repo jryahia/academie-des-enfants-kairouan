@@ -14,20 +14,20 @@ export default {
           coral: '#FF6B6B',
           lavender: '#B388FF',
         },
-        // Spacetoon-inspired candy palette — warm, vibrant, high-energy, kid-safe.
+        // Batman Studio dark palette — near-black + gold, cinematic and chic.
         candy: {
-          sky: '#5ED4F4',      // bright cartoon sky blue (Spacetoon energy)
-          cream: '#FFF6E9',    // warm paper/cream background
-          sun: '#FFD23F',      // sunny yellow
-          orange: '#FF9A3C',   // warm mandarin
-          coral: '#FF6B8A',    // punchy pink/red
-          mint: '#4BE0A2',     // fresh green
-          grass: '#58C778',    // playground green
-          grape: '#B07BF0',    // soft violet
-          berry: '#FF7BB0',    // candy pink
-          ink: '#2A2E45',      // soft deep text (not harsh black)
-          navy: '#3A4A8F',     // deep blue accent
-          cloud: '#FFFFFF',
+          sky: '#2b3a5e',      // deep steel blue (rare accent)
+          cream: '#0a0a0c',    // page background — Gotham black
+          sun: '#f0c75e',      // light gold
+          orange: '#e5b63e',   // gold accent
+          coral: '#e5b63e',    // gold — primary CTA
+          mint: '#4a9d86',     // muted teal (secondary links)
+          grass: '#4a9d86',
+          grape: '#7a6bb5',    // muted violet
+          berry: '#a35a7a',
+          ink: '#ece8de',      // warm off-white text
+          navy: '#a7a2b5',     // muted lavender-gray (secondary text)
+          cloud: '#141419',    // surface / card
         },
         // Anime hair/outfit splash colors for the 9 crew characters
         crew: {
@@ -44,8 +44,8 @@ export default {
       },
       fontFamily: {
         arabic: ['"Cairo"', '"Tajawal"', 'sans-serif'],
-        latin: ['"Nunito"', '"Baloo 2"', 'sans-serif'],
-        display: ['"Baloo 2"', '"Cairo"', 'sans-serif'],
+        latin: ['"Inter"', '"Playfair Display"', 'sans-serif'],
+        display: ['"Playfair Display"', '"Cairo"', 'serif'],
       },
       borderRadius: {
         blob: '42% 58% 55% 45% / 48% 42% 58% 52%',
