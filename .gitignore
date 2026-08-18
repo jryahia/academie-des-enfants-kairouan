@@ -10,3 +10,7 @@ yarn-error.log*
 .vscode/*
 !.vscode/extensions.json
 .idea/
+backend/.venv/
+backend/.env
+backend/enrollments.log
+__pycache__/
