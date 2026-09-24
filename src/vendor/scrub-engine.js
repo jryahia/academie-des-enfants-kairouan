@@ -136,9 +136,11 @@ function mountScrollWorld(container, config) {
   [sky, scrollbar, topbar, stage, copylayer, route, hint, track].forEach(n => container.appendChild(n));
 
   // segment scenes
-  SEGMENTS.forEach(s => {
+  SEGMENTS.forEach((s, si) => {
     const scene = el('div', 'sw-scene'); scene.style.setProperty('--sw-accent', s.accent || '');
-    const img = el('img', 'sw-scene__still'); img.alt = ''; img.decoding = 'async'; img.loading = 'lazy';
+    const img = el('img', 'sw-scene__still'); img.alt = ''; img.decoding = 'async';
+    // First still is the LCP element: load it eagerly at high priority, lazy-load the rest.
+    if (si === 0) { img.loading = 'eager'; img.setAttribute('fetchpriority', 'high'); } else img.loading = 'lazy';
     const poster = (isMobile() && s.stillM) ? s.stillM : s.still;
     if (poster) img.src = poster;
     scene.appendChild(img); stage.appendChild(scene);
@@ -182,6 +184,8 @@ function mountScrollWorld(container, config) {
   // programs). Segment math is relative to the container's page offset, measured
   // at layout() (and re-measured there on resize/load/language reflow).
   let startYC = 0;
+  let rafId = 0, destroyed = false, aborter = null;
+  const blobUrls = [];
 
   function layout() {
     vh = window.innerHeight;
@@ -206,15 +210,17 @@ function mountScrollWorld(container, config) {
     // and simply cross-dissolve as you scroll. No scrubbed video motion, no decode cost.
     if (reduce || s.loading || !s.clip) return;
     s.loading = true;
+    if (!aborter) aborter = new AbortController();
     // Serve the lighter mobile encode on phones when one was provided.
     const url = (isMobile() && s.clipM) ? s.clipM : s.clip;
-    fetch(url).then(r => r.ok ? r.blob() : Promise.reject(new Error('404')))
+    fetch(url, { signal: aborter.signal }).then(r => r.ok ? r.blob() : Promise.reject(new Error('404')))
       .then(blob => {
+        if (destroyed) return;
         const v = document.createElement('video');
         v.className = 'sw-scene__video';
         v.muted = true; v.playsInline = true; v.preload = 'auto';
         v.setAttribute('muted', ''); v.setAttribute('playsinline', '');
-        v.src = URL.createObjectURL(blob);
+        v.src = URL.createObjectURL(blob); blobUrls.push(v.src);
         v.addEventListener('loadedmetadata', () => { s.ready = true; read(); });
         // Reveal the video (hide the still poster) only once a real frame has
         // painted — on iOS a seeked-but-never-played muted video stays blank, so
@@ -279,6 +285,7 @@ function mountScrollWorld(container, config) {
   }
 
   function raf() {
+    if (destroyed) return;
     const eps = isMobile() ? 0.02 : 0.008;   // coarser seek step on phones = fewer decodes
     for (let i = 0; i < NSEG; i++) {
       const s = SEGMENTS[i];
@@ -293,7 +300,7 @@ function mountScrollWorld(container, config) {
       const t = clamp(s.cur, 0, 0.999) * dur;
       if (Math.abs(s.video.currentTime - t) > eps) { try { s.video.currentTime = t; } catch (e) {} }
     }
-    requestAnimationFrame(raf);
+    rafId = requestAnimationFrame(raf);
   }
 
   // iOS needs a user gesture before a muted video will decode/paint reliably. On the
@@ -316,7 +323,8 @@ function mountScrollWorld(container, config) {
 
   // Particles are a per-frame cost we can't afford alongside video scrubbing on a phone.
   seedParticles(particles, reduce || coarse);
-  window.addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(read); } }, { passive: true });
+  function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(read); } }
+  window.addEventListener('scroll', onScroll, { passive: true });
   // Mobile browsers fire `resize` every time the URL bar slides in/out. Re-running
   // layout() there rebuilds the track height and yanks the scroll position, so on
   // touch we ignore height-only changes and only relayout when the width actually
@@ -330,11 +338,34 @@ function mountScrollWorld(container, config) {
   window.addEventListener('orientationchange', layout);
   window.addEventListener('load', layout);
   layout();
-  requestAnimationFrame(raf);
+  rafId = requestAnimationFrame(raf);
+
+  // Tear down everything mount attached: loops, window listeners, in-flight
+  // clip fetches, video decoders and blob URLs.
+  function destroy() {
+    if (destroyed) return;
+    destroyed = true;
+    cancelAnimationFrame(rafId);
+    if (aborter) aborter.abort();
+    window.removeEventListener('pointerdown', onFirstGesture);
+    window.removeEventListener('touchstart', onFirstGesture);
+    window.removeEventListener('scroll', onScroll);
+    window.removeEventListener('resize', onResize);
+    window.removeEventListener('orientationchange', layout);
+    window.removeEventListener('load', layout);
+    SEGMENTS.forEach(s => {
+      if (!s.video) return;
+      try { s.video.pause(); } catch (e) {}
+      s.video.removeAttribute('src'); s.video.load();
+      s.video = null;
+    });
+    blobUrls.forEach(u => URL.revokeObjectURL(u));
+    blobUrls.length = 0;
+  }
 
   // Hermes embed patch: expose relayout so the host can re-measure startYC
   // when content above the flight changes height (e.g. AR<->FR reflow).
-  return { relayout: layout };
+  return { relayout: layout, destroy };
 
   // ---- helpers ----
   function el(tag, cls) { const n = document.createElement(tag); if (cls) n.className = cls; return n; }

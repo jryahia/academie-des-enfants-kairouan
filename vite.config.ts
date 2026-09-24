@@ -12,13 +12,7 @@ export default defineConfig({
   },
   build: {
     target: 'es2017',
-    // Keep the bundle lean so mid-range mobile loads fast
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          three: ['three', '@react-three/fiber', '@react-three/drei'],
-        },
-      },
-    },
+    // No sourcemaps in the deployed bundle
+    sourcemap: false,
   },
 })

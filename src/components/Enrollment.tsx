@@ -4,9 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion'
 
 /**
  * Real working enrollment form + WhatsApp/phone links.
- * Submission is a client-side confirmation (mascot celebration micro-animation
- * is the Claude brief); the open-items round decides whether submissions also
- * POST to a backend or go out via WhatsApp only.
+ * Submission shows a client-side confirmation immediately and POSTs to the
+ * enrollment API in the background.
  */
 export default function Enrollment() {
   const { t, i18n } = useTranslation()
@@ -41,8 +40,8 @@ export default function Enrollment() {
         signal: AbortSignal.timeout(6000),
       })
       if (!res.ok) throw new Error(String(res.status))
-    } catch (err) {
-      console.warn('enrollment API unreachable — lead queued locally', err)
+    } catch {
+      // API unreachable: queue the lead locally for later retry.
       try {
         const q = JSON.parse(localStorage.getItem('academie-pending') || '[]')
         q.push({ ...form, lang: i18n.language, ts: Date.now() })
@@ -88,7 +87,19 @@ export default function Enrollment() {
               className="mt-10 glass rounded-3xl p-10 text-center"
               role="status"
             >
-              <div className="text-5xl" aria-hidden>🎉</div>
+              <svg
+                aria-hidden
+                viewBox="0 0 24 24"
+                className="mx-auto h-14 w-14 text-candy-coral"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                <path d="m9 11 3 3L22 4" />
+              </svg>
               <p className="mt-4 text-lg font-semibold">{t('contact.form.success')}</p>
             </motion.div>
           ) : (

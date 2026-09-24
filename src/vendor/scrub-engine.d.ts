@@ -36,4 +36,4 @@ export interface ScrollWorldConfig {
 export declare function mountScrollWorld(
   container: HTMLElement,
   config: ScrollWorldConfig,
-): { relayout(): void }
+): { relayout(): void; destroy(): void }

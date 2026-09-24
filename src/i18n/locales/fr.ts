@@ -132,7 +132,7 @@ export const FR: Translation = {
       phone: 'Numéro de téléphone',
       message: 'Votre message (optionnel)',
       submit: 'Envoyer la demande',
-      success: "Merci ! Nous avons bien reçu votre demande. 🎉",
+      success: "Merci ! Nous avons bien reçu votre demande.",
       required: 'Ce champ est obligatoire',
       invalidPhone: 'Veuillez saisir un numéro valide',
     },

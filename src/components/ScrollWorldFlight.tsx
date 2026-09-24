@@ -169,6 +169,7 @@ export default function ScrollWorldFlight() {
 
     return () => {
       io.disconnect()
+      engine.destroy()
       body.classList.remove('sw-flight-active')
       i18n.off('languageChanged', sync)
       setLangHost(null)
