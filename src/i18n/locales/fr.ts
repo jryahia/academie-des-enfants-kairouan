@@ -32,7 +32,6 @@ export const FR: Translation = {
   about: {
     title: 'À propos',
     body: "L'Académie des Enfants Kairouan est un espace éducatif qui célèbre l'enfance de chaque enfant. Nous croyons que le vrai apprentissage naît de la curiosité et grandit par le jeu, l'expérience et la chaleur du partage.",
-    badgeValue: '☺',
     chip: 'Des sourires, chaque jour',
   },
   programs: {

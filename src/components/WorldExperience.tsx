@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next'
 import ScrollWorldFlight from './ScrollWorldFlight'
-import type { DeviceQuality } from '../hooks/useDeviceQuality'
 
 /* =========================================================================
   WorldExperience — Section 4: the scroll-world photo flight (signature
@@ -13,7 +12,7 @@ import type { DeviceQuality } from '../hooks/useDeviceQuality'
   without loading any clip.
   ========================================================================= */
 
-export default function WorldExperience({ deviceQuality: _deviceQuality }: { deviceQuality: DeviceQuality }) {
+export default function WorldExperience() {
   const { t } = useTranslation()
   return (
     <section id="world" className="relative w-full" aria-label={t('world.title')}>

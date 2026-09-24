@@ -1,5 +1,4 @@
 import { Suspense, lazy } from 'react'
-import { useDeviceQuality } from './hooks/useDeviceQuality'
 
 // The entire site IS the scroll-world flight (7 real academy photos, one per
 // scene) — a full-viewport scroll-scrubbed camera journey. Only the enrollment
@@ -39,13 +38,11 @@ function LoadingSplash() {
 }
 
 export default function App() {
-  const q = useDeviceQuality()
-
   return (
     <div className="min-h-screen bg-candy-cream text-candy-ink">
       <main id="top" className="relative z-10">
         <Suspense fallback={<LoadingSplash />}>
-          <World deviceQuality={q} />
+          <World />
           <Enrollment />
         </Suspense>
       </main>
