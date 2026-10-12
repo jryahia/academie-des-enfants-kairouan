@@ -14,9 +14,16 @@
   }
 }
 
-/* ===== Batman Studio dark theme (near-black + gold, cinematic) ===== */
+/* ===== Playground theme: bright yellow, lime, orange, primary blue ===== */
 :root {
-  color-scheme: dark;
+  color-scheme: light;
+  --play-yellow: #ffd21f;
+  --play-lime: #8cd62b;
+  --play-orange: #ff8a1f;
+  --play-blue: #1e63ff;
+  --play-pink: #ff4fa3;
+  --play-cream: #fff9e8;
+  --play-ink: #13235b;
 }
 
 html {
@@ -25,212 +32,185 @@ html {
 
 body {
   margin: 0;
-  background: #0a0a0c; /* Gotham black */
-  color: #ece8de;      /* warm off-white ink */
+  background: var(--play-cream);
+  color: var(--play-ink);
   font-family: 'Inter', 'Cairo', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
+  /* clip, not hidden: hidden on html+body turns body into a scroll
+     container and breaks the hero's position: sticky. */
+  overflow-x: clip;
 }
 
 /* RTL-aware defaults */
 html[dir='rtl'] body {
   font-family: 'Cairo', 'Inter', system-ui, sans-serif;
 }
+html[dir='rtl'] .font-display {
+  font-family: 'Baloo Bhaijaan 2', 'Cairo', sans-serif;
+}
 
 #root {
   min-height: 100vh;
 }
 
-/* Glassmorphism helper — dark cinematic glass card */
+/* Glass card, light and airy */
 .glass {
-  background: rgba(20, 20, 25, 0.62);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(236, 232, 222, 0.08);
-  box-shadow: 0 24px 60px -24px rgba(0, 0, 0, 0.7);
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 3px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 24px 60px -24px rgba(19, 35, 91, 0.35);
 }
 
-/* Gradient text — gold (Batman accent) */
+/* Gradient text: orange to pink to blue */
 .text-gradient {
-  background: linear-gradient(135deg, #f0c75e 0%, #e5b63e 45%, #b8902e 100%);
+  background: linear-gradient(100deg, #ff7a00 0%, #ff4fa3 45%, #1e63ff 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-/* =========================================================================
-   Scroll-world flight (vendored scrub engine, .sw-* classes)
-   Themed to the Batman Studio look: near-black sky, gold accent, cinematic
-   display type, vignette grade over the photos. Fixed layers are gated to the
-   section (the site IS the flight, so it starts active at load).
-   ========================================================================= */
-.sw-flight {
-  /* Unlayered vars beat the engine's @layer sw defaults */
-  --sw-bg: #0b0b10; /* near-black — dramatic against the bright photos */
-  --sw-ink: #f2efe6;
-  --sw-ink-soft: #9a96a3;
-  --sw-accent: #e5b63e; /* Batman gold */
-  --sw-font-display: 'Playfair Display', 'Cairo', serif;
-  --sw-font-body: 'Inter', 'Cairo', system-ui, sans-serif;
+/* Living colour-blob background for the hero and sections. Two layers of
+   soft radial blobs drift in opposite directions on GPU transforms only. */
+/* Caller sets position (relative / sticky) so this never overrides it. */
+.bg-playful {
+  isolation: isolate;
+  background:
+    radial-gradient(60% 50% at 85% 10%, rgba(191, 227, 255, 0.9), transparent 70%),
+    linear-gradient(180deg, #fff6d1 0%, var(--play-cream) 55%, #eaf6d8 100%);
 }
-
-/* Fixed layers hidden until the section is on screen */
-.sw-flight .sw-sky,
-.sw-flight .sw-scrollbar,
-.sw-flight .sw-topbar,
-.sw-flight .sw-stage,
-.sw-flight .sw-copylayer,
-.sw-flight .sw-route,
-.sw-flight .sw-hint {
-  opacity: 0;
-  visibility: hidden;
+.bg-playful::before,
+.bg-playful::after {
+  content: '';
+  position: absolute;
+  inset: -20%;
+  z-index: -1;
   pointer-events: none;
-  transition:
-    opacity 0.5s ease,
-    visibility 0.5s;
+  filter: blur(40px);
+  opacity: 0.75;
 }
-.sw-flight.sw-active .sw-sky,
-.sw-flight.sw-active .sw-scrollbar,
-.sw-flight.sw-active .sw-topbar,
-.sw-flight.sw-active .sw-stage,
-.sw-flight.sw-active .sw-copylayer,
-.sw-flight.sw-active .sw-route,
-.sw-flight.sw-active .sw-hint {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
+.bg-playful::before {
+  background:
+    radial-gradient(22% 26% at 15% 25%, rgba(255, 210, 31, 0.85), transparent 70%),
+    radial-gradient(20% 24% at 80% 70%, rgba(140, 214, 43, 0.7), transparent 70%);
+  animation: blob-drift-a 18s ease-in-out infinite alternate;
+}
+.bg-playful::after {
+  background:
+    radial-gradient(18% 22% at 70% 20%, rgba(255, 138, 31, 0.55), transparent 70%),
+    radial-gradient(22% 24% at 25% 80%, rgba(30, 99, 255, 0.35), transparent 70%);
+  animation: blob-drift-b 22s ease-in-out infinite alternate;
+}
+@keyframes blob-drift-a {
+  to {
+    transform: translate3d(6%, 4%, 0) rotate(8deg);
+  }
+}
+@keyframes blob-drift-b {
+  to {
+    transform: translate3d(-5%, -6%, 0) rotate(-10deg);
+  }
 }
 
-/* While the flight owns the viewport, hide the site header (z-40) so the
-   engine's own topbar (z-50) reads as the page chrome. */
-body.sw-flight-active .site-header {
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.4s ease;
+/* ===== Lenis smooth scroll (recommended base styles) ===== */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
 }
 
-/* --- cinematic grade: subtle vignette over the photos --- */
-.sw-flight .sw-stage::after {
+/* ===== Premium layer: glass, glow buttons, paper grain ===== */
+
+/* Frosted glass over the colour blobs: translucent cream, hairline white edge,
+   inner top highlight. */
+.glass-card {
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.78), rgba(255, 249, 232, 0.55));
+  backdrop-filter: blur(22px) saturate(1.4);
+  -webkit-backdrop-filter: blur(22px) saturate(1.4);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 30px 60px -32px rgba(19, 35, 91, 0.45);
+}
+
+/* CTA with pointer-tracked inner glow (GlowButton sets --mx/--my). */
+.btn-glow {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  box-shadow:
+    var(--btn-drop),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  transition: box-shadow 0.35s ease;
+}
+.btn-glow::before {
   content: '';
   position: absolute;
   inset: 0;
-  z-index: 2;
-  pointer-events: none;
-  background:
-    radial-gradient(130% 100% at 50% 38%, transparent 52%, rgba(5, 5, 8, 0.42) 88%, rgba(4, 4, 6, 0.62) 100%),
-    linear-gradient(180deg, rgba(10, 10, 12, 0.18) 0%, transparent 16%, transparent 78%, rgba(10, 10, 12, 0.34) 100%);
+  z-index: -1;
+  background: radial-gradient(130px circle at var(--mx, 50%) var(--my, 50%), rgba(255, 255, 255, 0.7), transparent 62%);
+  opacity: 0;
+  transition: opacity 0.35s ease;
 }
-
-/* --- engine dark overrides --- */
-
-/* Gold primary buttons (engine default = --sw-ink bg = near-white) */
-.sw-flight .sw-btn--primary,
-.sw-flight .sw-topcta {
-  background: var(--sw-accent);
-  color: #0a0a0c;
-  box-shadow: 0 8px 28px -8px color-mix(in srgb, var(--sw-accent) 55%, transparent);
+.btn-glow:hover::before,
+.btn-glow:focus-visible::before {
+  opacity: 1;
 }
-.sw-flight .sw-btn--primary:hover,
-.sw-flight .sw-topcta:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 32px -8px color-mix(in srgb, var(--sw-accent) 70%, transparent);
-}
-.sw-flight .sw-btn--ghost {
-  color: var(--sw-ink);
-  border-color: color-mix(in srgb, var(--sw-accent) 45%, transparent);
-}
-
-/* Topbar nav pill — dark glass */
-.sw-flight .sw-nav {
-  background: rgba(20, 20, 26, 0.72);
-  backdrop-filter: blur(14px);
-  border-color: color-mix(in srgb, var(--sw-accent) 22%, transparent);
-  box-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.8);
-}
-.sw-flight .sw-nav__item {
-  color: var(--sw-ink-soft);
-}
-.sw-flight .sw-nav__item:hover {
-  color: var(--sw-ink);
-}
-.sw-flight .sw-nav__item.is-active {
-  color: #0a0a0c;
-  background: var(--sw-accent);
-}
-
-/* Brand mark glows gold */
-.sw-flight .sw-brand__mark {
+.btn-glow:hover,
+.btn-glow:focus-visible {
   box-shadow:
-    0 6px 14px color-mix(in srgb, var(--sw-accent) 45%, transparent),
-    0 0 22px color-mix(in srgb, var(--sw-accent) 28%, transparent);
+    var(--btn-drop),
+    inset 0 0 20px rgba(255, 255, 255, 0.55),
+    0 0 34px -6px var(--btn-halo);
+}
+.btn-glow:focus-visible {
+  outline: 3px solid #1e63ff;
+  outline-offset: 3px;
 }
 
-/* Copy panel — chic cinematic type */
-.sw-flight .sw-copy__num {
-  color: color-mix(in srgb, var(--sw-accent) 78%, var(--sw-ink-soft));
-  letter-spacing: 0.18em;
-}
-.sw-flight .sw-copy__eyebrow {
-  letter-spacing: 0.22em;
-  color: var(--sw-accent);
-}
-.sw-flight .sw-copy__title {
-  font-weight: 600;
-  letter-spacing: -0.015em;
-  text-shadow: 0 2px 30px rgba(0, 0, 0, 0.55);
-}
-.sw-flight .sw-copy__body {
-  color: color-mix(in srgb, var(--sw-ink) 82%, var(--sw-ink-soft));
-  text-shadow: 0 1px 14px rgba(0, 0, 0, 0.5);
-}
-.sw-flight .sw-copy__tags li {
-  color: var(--sw-accent);
-  background: color-mix(in srgb, var(--sw-accent) 12%, #141419);
-  border-color: color-mix(in srgb, var(--sw-accent) 30%, transparent);
+/* Fine paper grain over the whole page: the "printed" premium finish. */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-/* Route rail — dark with gold dots */
-.sw-flight .sw-route__label {
-  color: var(--sw-ink);
-  background: rgba(16, 16, 21, 0.92);
-  backdrop-filter: blur(8px);
-  border-color: color-mix(in srgb, var(--sw-accent) 18%, transparent);
+/* Twinkle for the magic overlay sparkles */
+@keyframes twinkle {
+  0%, 100% { opacity: 0.2; transform: scale(0.6) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1) rotate(45deg); }
+}
+.animate-twinkle {
+  animation: twinkle 2.8s ease-in-out infinite;
 }
 
-/* Scrollbar + hint stay accent-tinted (engine handles via vars) */
-
-/* Language switcher appended into the engine topbar */
-.sw-flight .sw-lang {
-  display: flex;
-  align-items: center;
-  margin-left: 12px;
+/* Gold-foil admission ticket: cream paper inside a slowly shimmering
+   gold gradient border. */
+.ticket-foil {
+  border: 3px solid transparent;
+  background:
+    linear-gradient(170deg, #fffdf6 0%, #fff5dc 100%) padding-box,
+    linear-gradient(120deg, #fff1b0, #f2b705, #ff8a1f, #ffe58a, #f2b705, #fff1b0) border-box;
+  background-size: 100% 100%, 300% 300%;
+  box-shadow:
+    0 0 70px -14px rgba(255, 198, 26, 0.55),
+    0 40px 80px -30px rgba(0, 0, 0, 0.6);
+  animation: foil-shimmer 7s linear infinite;
 }
-.sw-flight .sw-lang button {
-  color: var(--sw-ink);
-  border-color: color-mix(in srgb, var(--sw-ink) 28%, transparent);
-  background: rgba(20, 20, 26, 0.72);
-  backdrop-filter: blur(14px);
-}
-.sw-flight .sw-lang button:hover {
-  border-color: var(--sw-accent);
-  color: var(--sw-accent);
-}
-
-/* RTL mirroring — copy panel, wash gradient and route flip sides */
-html[dir='rtl'] .sw-flight .sw-copy {
-  left: auto;
-  right: clamp(18px, 5vw, 64px);
-}
-html[dir='rtl'] .sw-flight .sw-copylayer::before {
-  left: auto;
-  right: 0;
-  transform: scaleX(-1);
-}
-html[dir='rtl'] .sw-flight .sw-route {
-  right: auto;
-  left: clamp(14px, 2.4vw, 30px);
-}
-html[dir='rtl'] .sw-flight .sw-route__label {
-  right: 24px;
-  left: auto;
+@keyframes foil-shimmer {
+  from { background-position: 0 0, 0% 50%; }
+  to { background-position: 0 0, 300% 50%; }
 }

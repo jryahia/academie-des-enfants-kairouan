@@ -14,20 +14,30 @@ export default {
           coral: '#FF6B6B',
           lavender: '#B388FF',
         },
-        // Batman Studio dark palette — near-black + gold, cinematic and chic.
+        // Playground palette, sampled from the real academy photos: bright
+        // yellow mats, lime floors, orange platforms, primary-blue rolls.
+        play: {
+          yellow: '#FFD21F',
+          lime: '#8CD62B',
+          orange: '#FF8A1F',
+          blue: '#1E63FF',
+          pink: '#FF4FA3',
+          sky: '#BFE3FF',
+        },
+        // Semantic tokens used across components (names kept, values bright).
         candy: {
-          sky: '#2b3a5e',      // deep steel blue (rare accent)
-          cream: '#0a0a0c',    // page background — Gotham black
-          sun: '#f0c75e',      // light gold
-          orange: '#e5b63e',   // gold accent
-          coral: '#e5b63e',    // gold — primary CTA
-          mint: '#4a9d86',     // muted teal (secondary links)
-          grass: '#4a9d86',
-          grape: '#7a6bb5',    // muted violet
-          berry: '#a35a7a',
-          ink: '#ece8de',      // warm off-white text
-          navy: '#a7a2b5',     // muted lavender-gray (secondary text)
-          cloud: '#141419',    // surface / card
+          sky: '#BFE3FF',      // soft sky accent
+          cream: '#FFF9E8',    // page background, warm cream
+          sun: '#FFD21F',      // bright yellow
+          orange: '#FF8A1F',   // orange accent
+          coral: '#FF8A1F',    // primary CTA (orange)
+          mint: '#3FA215',     // lime, darkened for readable links
+          grass: '#8CD62B',
+          grape: '#1E63FF',    // primary blue
+          berry: '#FF4FA3',
+          ink: '#13235B',      // deep navy text
+          navy: '#3D4B7A',     // secondary text
+          cloud: '#FFFFFF',    // surface / card
         },
         // Anime hair/outfit splash colors for the 9 crew characters
         crew: {
@@ -44,11 +54,21 @@ export default {
       },
       fontFamily: {
         arabic: ['"Cairo"', '"Tajawal"', 'sans-serif'],
-        latin: ['"Inter"', '"Playfair Display"', 'sans-serif'],
-        display: ['"Playfair Display"', '"Cairo"', 'serif'],
+        latin: ['"Inter"', 'sans-serif'],
+        display: ['"Baloo 2"', '"Baloo Bhaijaan 2"', '"Cairo"', 'sans-serif'],
       },
       borderRadius: {
         blob: '42% 58% 55% 45% / 48% 42% 58% 52%',
+      },
+      keyframes: {
+        float: {
+          '0%, 100%': { transform: 'translateY(0) rotate(0deg)' },
+          '50%': { transform: 'translateY(-16px) rotate(6deg)' },
+        },
+      },
+      animation: {
+        float: 'float 6s ease-in-out infinite',
+        'float-slow': 'float 9s ease-in-out infinite',
       },
     },
   },

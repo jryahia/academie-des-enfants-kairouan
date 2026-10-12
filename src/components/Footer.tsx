@@ -1,17 +1,15 @@
 import { useTranslation } from 'react-i18next'
+import BrandLogo from './BrandLogo'
+import { WHATSAPP_URL } from '../data/contact'
 
 export default function Footer() {
   const { t } = useTranslation()
   return (
-    <footer className="border-t border-candy-ink/10 bg-candy-cloud/60 px-4 sm:px-6 py-10">
+    <footer className="glass-card relative z-10 rounded-t-[40px] border-b-0 px-4 py-12 sm:px-6">
       <div className="max-w-6xl mx-auto grid sm:grid-cols-3 gap-8 text-sm">
         <div>
-          <a href="#top" className="inline-flex items-center gap-2 font-display font-bold text-lg text-candy-ink">
-            <svg aria-hidden viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
-              <path d="M6 12v5c3 3 9 3 12 0v-5" />
-            </svg>
-            {t('hero.tagline')}
+          <a href="#top" className="inline-flex" aria-label={t('hero.tagline')}>
+            <BrandLogo />
           </a>
           <p className="mt-2 text-candy-ink/70">{t('footer.tagline')}</p>
           <p className="mt-2 inline-flex items-center gap-1.5 text-candy-ink/50">
@@ -24,12 +22,12 @@ export default function Footer() {
         </div>
         <nav aria-label={t('footer.quickLinks')}>
           <h4 className="font-bold text-candy-ink mb-2">{t('footer.quickLinks')}</h4>
-          <ul className="space-y-1 text-candy-ink/70">
-            {(['home', 'world', 'contact'] as const).map((k) => (
+          <ul className="text-candy-ink/70">
+            {(['home', 'world', 'programs', 'values', 'contact'] as const).map((k) => (
               <li key={k}>
                 <a
-                  href={k === 'home' ? '#top' : k === 'world' ? '#world' : '#contact'}
-                  className="hover:text-candy-orange transition-colors"
+                  href={k === 'home' ? '#top' : `#${k}`}
+                  className="inline-flex min-h-[44px] min-w-[44px] items-center transition-colors hover:text-candy-orange"
                 >
                   {t(`nav.${k}`)}
                 </a>
@@ -39,14 +37,14 @@ export default function Footer() {
         </nav>
         <div>
           <h4 className="font-bold text-candy-ink mb-2">{t('footer.contactUs')}</h4>
-          <ul className="space-y-1 text-candy-ink/70">
+          <ul className="text-candy-ink/70">
             <li>
-              <a href="https://wa.me/21600000000" target="_blank" rel="noreferrer" className="hover:text-candy-mint transition-colors">
+              <a href={WHATSAPP_URL} target="_blank" rel="noreferrer" className="inline-flex min-h-[44px] items-center transition-colors hover:text-candy-mint">
                 WhatsApp
               </a>
             </li>
             <li>
-              <a href="https://facebook.com" target="_blank" rel="noreferrer" className="hover:text-candy-mint transition-colors">
+              <a href="https://facebook.com" target="_blank" rel="noreferrer" className="inline-flex min-h-[44px] items-center transition-colors hover:text-candy-mint">
                 Facebook
               </a>
             </li>

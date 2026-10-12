@@ -12,7 +12,7 @@ const NAME: Record<Locale, string> = { ar: 'العربية', fr: 'Français' }
  * brief fade so the layout snap reads as a considered transition, not a jar.
  */
 export default function LanguageSwitcher() {
-  const { i18n } = useTranslation()
+  const { t, i18n } = useTranslation()
   const [busy, setBusy] = useState(false)
   const current = (i18n.language as Locale) === 'ar' ? 'ar' : 'fr'
 
@@ -29,8 +29,8 @@ export default function LanguageSwitcher() {
       <button
         onClick={toggle}
         disabled={busy}
-        className="rounded-full border border-candy-ink/20 px-3 py-1.5 text-sm font-bold hover:border-candy-orange hover:text-candy-orange transition-colors"
-        aria-label={`Switch language to ${NAME[current === 'ar' ? 'fr' : 'ar']}`}
+        className="grid min-h-[44px] min-w-[44px] place-items-center rounded-full border border-candy-ink/20 px-3 text-sm font-bold transition-colors hover:border-candy-orange hover:text-candy-orange"
+        aria-label={`${t('nav.switchLang')}: ${NAME[current === 'ar' ? 'fr' : 'ar']}`}
       >
         {LABEL[current]}
       </button>
