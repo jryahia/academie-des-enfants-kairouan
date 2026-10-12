@@ -20,10 +20,10 @@ function brandFavicon(): Plugin {
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  // Public path. '/' for Cloudflare Pages / local. GitHub Pages project sites
-  // are served from '/<repo-name>/': set it here before `npm run deploy`.
+  // Public path: the GitHub Pages project site lives at /<repo-name>/.
+  // Hosting at a domain root instead (Cloudflare Pages, custom domain)? Set '/'.
   // Photo URLs read import.meta.env.BASE_URL, so nothing else needs editing.
-  base: '/',
+  base: '/academie-des-enfants-kairouan/',
   plugins: [react(), brandFavicon()],
   server: {
     proxy: {
